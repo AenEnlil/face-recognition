@@ -1,17 +1,32 @@
-import React from "react";
+import { React, useState } from "react";
 import { useForm } from "react-hook-form";
+import Cookies from "js-cookie";
+
+import AuthService from "../../services/AuthService";
 
 import "../SignUp/signUp.scss";
 import BgImg from "../../assets/images/sign-up-bg.jpg";
 import "./signIn.scss";
 
 function SignIn() {
+  const [servError, setServError] = useState();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    AuthService.signIn(data)
+      .then((result) => {
+        console.log(result);
+        if (result?.data) {
+          Cookies.set("isLogged", true)
+        }
+      })
+      .catch((errors) => {
+        setServError(errors?.response?.data?.error)
+      });
+  };
   return (
     <section className="registerBox">
       <div className="register">
@@ -53,6 +68,7 @@ function SignIn() {
             {errors.password && (
               <p className="formError">{errors.password.message}</p>
             )}
+            {servError && <p className="formError">{servError}</p>}
             <button className="btn">Sign In</button>
           </form>
         </div>

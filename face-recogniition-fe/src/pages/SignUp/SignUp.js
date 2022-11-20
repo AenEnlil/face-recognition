@@ -1,21 +1,26 @@
-import React from "react";
+import { React, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import signUp from "../../services/SignUpService";
+import AuthService from "../../services/AuthService";
 
 import "./signUp.scss";
 import BgImg from "../../assets/images/sign-up-bg.jpg";
 
 function SignUp() {
+  const [servError, setServError] = useState();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
-    signUp(data).then((result) => {
-      console.log(result);
-    });
+    AuthService.signUp(data)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((errors) => {
+        setServError(errors?.response?.data?.email);
+      });
   };
 
   return (
@@ -58,6 +63,9 @@ function SignUp() {
             />
             {errors.password && (
               <p className="formError">{errors.password.message}</p>
+            )}
+            {servError && (
+              <p className="formError">{servError}</p>
             )}
             <button className="btn">Sign Up</button>
           </form>

@@ -45,7 +45,7 @@
                     margin-right: 12px;
                 }
 
-                a {
+                .navItem {
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -57,6 +57,13 @@
                     &:hover {
                         background-color: #F3F9FF;
                     }
+                }
+
+                .navItemBtn {
+                    @extend .navItem;
+                    text-decoration: none;
+                    color: #000;
+                    background: none;
                 }
             }
         }
