@@ -1,9 +1,28 @@
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
 body {
     font-family: Helvetica;
     margin: 0;
 }
 
-a {
-    text-decoration: none;
-    color: #000;
+body {
+
+    main {
+        display: flex;
+        flex-direction: column;
+
+        position: absolute;
+        left: 0;
+        width: 100%;
+        top: 80px;
+        bottom: 170px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #000;
+    }
 }
