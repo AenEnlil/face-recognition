@@ -1,6 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
+import signUp from "../../services/SignUpService";
+
 import "./signUp.scss";
 import BgImg from "../../assets/images/sign-up-bg.jpg";
 
@@ -10,7 +12,11 @@ function SignUp() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    signUp(data).then((result) => {
+      console.log(result);
+    });
+  };
 
   return (
     <section className="registerBox">
@@ -36,16 +42,23 @@ function SignUp() {
               })}
               placeholder="Email"
             />
-            {errors.email && <p className="formError">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="formError">{errors.email.message}</p>
+            )}
             <input
               type="text"
-              {...register("password", { required: "Password is required", minLength: {
-                value: 5,
-                message: "Must be min 5 chars"
-              } })}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 5,
+                  message: "Must be min 5 chars",
+                },
+              })}
               placeholder="Password"
             />
-            {errors.password && <p className="formError">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="formError">{errors.password.message}</p>
+            )}
             <button className="btn">Sign Up</button>
           </form>
         </div>
