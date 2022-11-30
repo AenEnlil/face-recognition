@@ -57,7 +57,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
-ROOT_URLCONF = 'VisualAuth.urls'
+ROOT_URLCONF = 'conf.urls'
 
 TEMPLATES = [
     {
@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'VisualAuth.wsgi.application'
+WSGI_APPLICATION = 'conf.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -132,10 +132,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': (
-#         'rest_framework.permissions.IsAuthenticated',
-#         ),
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        ),
 #     'DEFAULT_AUTHENTICATION_CLASSES': (
 #         'rest_framework_simplejwt.authentication.JWTAuthentication',
 #     ),
+}
