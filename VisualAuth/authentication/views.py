@@ -2,7 +2,7 @@ import cv2
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from face_recognition import load_image_file, face_encodings, compare_faces, face_locations
 
 from .serializers import UserSerializer
@@ -10,6 +10,7 @@ from .models import User
 
 
 class LoginView(APIView):
+    permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -17,8 +18,7 @@ class LoginView(APIView):
 
         if user is not None:
             if not user.using_visual_authentication:
-                login(request, user)
-                return Response({"result": 'logged in'}, 200)
+                return Response(user.create_tokens_for_user(), 200)
 
             return Response({"id": user.id}, 200)
         return Response({"error": 'invalid credentials'}, 400)
