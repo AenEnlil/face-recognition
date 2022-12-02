@@ -1,6 +1,7 @@
 import { React, useState } from "react";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router";
 
 import AuthService from "../../services/AuthService";
 
@@ -9,6 +10,7 @@ import BgImg from "../../assets/images/sign-up-bg.jpg";
 import "./signIn.scss";
 
 function SignIn() {
+  const navigate = useNavigate();
   const [servError, setServError] = useState();
   const {
     register,
@@ -21,6 +23,9 @@ function SignIn() {
         console.log(result);
         if (result?.data) {
           Cookies.set("isLogged", true)
+          Cookies.set("access", result?.data?.access);
+          Cookies.set("refresh", result?.data?.refresh);
+          navigate(`/user-profile`);
         }
       })
       .catch((errors) => {

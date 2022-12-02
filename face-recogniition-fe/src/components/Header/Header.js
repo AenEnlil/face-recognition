@@ -1,6 +1,7 @@
-import {React} from "react";
+import { React, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { NavLink } from "react-router-dom";
+import { useLocation } from "react-router";
 
 import AuthService from "../../services/AuthService";
 
@@ -9,10 +10,49 @@ import Logo from "../../assets/images/logo.jpg";
 
 function Header() {
   const isLogged = Cookies.get("isLogged");
+  let location = useLocation();
+  const [logged, setLogged] = useState(false);
+
+  useEffect(() => {
+    if (isLogged === "true") {
+      setLogged(true)
+    } else {
+      setLogged(false)
+    }
+  }, [isLogged, location])
 
   function logOut() {
     AuthService.signOut();
-    Cookies.set("isLogged", false)
+    Cookies.remove("isLogged");
+    Cookies.remove("access");
+    Cookies.remove("refresh");
+  }
+
+  function renderTopBtns() {
+    if (logged && logged === true) {
+      return (
+        <li>
+          <button className="navItemBtn" onClick={() => logOut()}>
+            LogOut
+          </button>
+        </li>
+      );
+    } else {
+      return (
+        <>
+          <li>
+            <NavLink className="navItem" to="/sign-in">
+              Sign In
+            </NavLink>
+          </li>
+          <li>
+            <NavLink className="navItem" to="/sign-up">
+              Sign Up
+            </NavLink>
+          </li>
+        </>
+      );
+    }
   }
 
   return (
@@ -25,20 +65,7 @@ function Header() {
       </div>
       <nav className="navigationMenu">
         <ul className="nav">
-          {isLogged === true ? (
-            <li>
-              <button className='navItemBtn'onClick={() => logOut()}>LogOut</button>
-            </li>
-          ) : (
-            <>
-              <li>
-                <NavLink className='navItem' to="/sign-in">Sign In</NavLink>
-              </li>
-              <li>
-                <NavLink className='navItem' to="/sign-up">Sign Up</NavLink>
-              </li>
-            </>
-          )}
+          {renderTopBtns()}
         </ul>
       </nav>
     </header>
