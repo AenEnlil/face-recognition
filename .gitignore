@@ -1,1 +1,4 @@
 VisualAuth/db.sqlite3
+VisualAuth/authentication/__pycache__
+VisualAuth/authentication/migrations/__pycache__
+VisualAuth/conf/__pycache__

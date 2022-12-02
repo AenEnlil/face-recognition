@@ -1,31 +1,122 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef, useCallback } from "react";
 import Switch from "react-switch";
+import Webcam from "react-webcam";
+import Button from "react-bootstrap/Button";
 
 import UserService from "../../services/UserService";
 
 import "./UserProfile.scss";
 
+const videoConstraints = {
+  width: 500,
+  height: 500,
+  facingMode: "user",
+};
+
 function UserProfile() {
   const [userInfo, setUserInfo] = useState();
+  const [toggleSwitch, setToggleSwitch] = useState(false);
   useEffect(() => {
     if (!userInfo) {
       UserService.getUserProfile().then((result) => {
         setUserInfo(result?.data);
+        setToggleSwitch(result?.data?.using_visual_authentication);
       });
     }
   }, [userInfo]);
 
   function handleToggleChange() {
-    console.log("changed");
+    setToggleSwitch(!toggleSwitch);
   }
+
+  const [picture, setPicture] = useState("");
+  const webcamRef = useRef(null);
+  const capture = useCallback(() => {
+    const pictureSrc = webcamRef.current.getScreenshot();
+    setPicture(pictureSrc);
+  }, []);
 
   return (
     <>
-      <div>User mail: {userInfo?.email}</div>
-      <div>
-        <label>Use visual verification:</label>
-        <Switch onChange={handleToggleChange} checked={userInfo?.using_visual_authentication} />
-      </div>
+      <article className="mainContent">
+        <div className="leftBlock">
+          <section className="userInfo">
+            <h2>
+              User mail: <span>{userInfo?.email}</span>
+            </h2>
+          </section>
+
+          <section className="visualAuthBlock">
+            <h2>Use visual verification:</h2>
+            <div className="toggleBlock">
+              <Switch
+                onChange={handleToggleChange}
+                checked={toggleSwitch && toggleSwitch}
+              />
+              {userInfo && userInfo?.have_face_image ? (
+                <p className="infoMsg positiveWarningMsg">
+                  You already have an uploaded image
+                </p>
+              ) : (
+                <p className="infoMsg negativeWarningMsg">
+                  You don't have an uploaded image
+                </p>
+              )}
+            </div>
+          </section>
+        </div>
+
+        <div className="rightBlock">
+          {picture ? (
+            <img alt="userImg" src={picture} />
+          ) : (
+            <Webcam
+              audio={false}
+              height={400}
+              ref={webcamRef}
+              width={400}
+              screenshotFormat="image/jpeg"
+              videoConstraints={videoConstraints}
+              mirrored={true}
+            />
+          )}
+
+          {picture ? (
+            <div className="btnBlock">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPicture();
+                }}
+                className="btn btn-danger"
+              >
+                Retake
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+                className="btn btn-success"
+              >
+                Save image
+              </button>
+            </div>
+          ) : (
+            <div className="btnBlock">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  capture();
+                }}
+                className="btn btn-danger"
+              >
+                Capture
+              </button>
+            </div>
+          )}
+        </div>
+      </article>
     </>
   );
 }

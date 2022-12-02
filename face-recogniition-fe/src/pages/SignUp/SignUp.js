@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 import AuthService from "../../services/AuthService";
 
@@ -8,6 +9,7 @@ import BgImg from "../../assets/images/sign-up-bg.jpg";
 
 function SignUp() {
   const [servError, setServError] = useState();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -16,7 +18,9 @@ function SignUp() {
   const onSubmit = (data) => {
     AuthService.signUp(data)
       .then((result) => {
-        console.log(result);
+        if (result.status === 201) {
+          navigate(`/sign-in`);
+        }
       })
       .catch((errors) => {
         setServError(errors?.response?.data?.email);
