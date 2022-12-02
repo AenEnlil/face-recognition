@@ -25,6 +25,7 @@ class LoginView(APIView):
 
 
 class VisualAuthentication(APIView):
+    permission_classes = (AllowAny,)
 
     @staticmethod
     def face_authentication(face1, face2):
@@ -64,6 +65,8 @@ class LogoutView(APIView):
 
 
 class RegisterView(APIView):
+    permission_classes = (AllowAny,)
+
 
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
@@ -73,6 +76,7 @@ class RegisterView(APIView):
 
 
 class ProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         serializer = UserSerializer(request.user)

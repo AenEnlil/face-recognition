@@ -25,7 +25,7 @@ function Header() {
       </div>
       <nav className="navigationMenu">
         <ul className="nav">
-          {isLogged && isLogged === true ? (
+          {isLogged === true ? (
             <li>
               <button className='navItemBtn'onClick={() => logOut()}>LogOut</button>
             </li>

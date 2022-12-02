@@ -20,17 +20,11 @@ function SignIn() {
       .then((result) => {
         console.log(result);
         if (result?.data) {
-          Cookies.set("isLogged", true);
-          Cookies.set("access", result.data.access, {
-            domain: "localhost",
-          });
-          Cookies.set("refresh", result.data.refresh, {
-            domain: "localhost",
-          });
+          Cookies.set("isLogged", true)
         }
       })
       .catch((errors) => {
-        setServError(errors?.response?.data?.error);
+        setServError(errors?.response?.data?.error)
       });
   };
   return (
