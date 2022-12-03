@@ -15,6 +15,7 @@ const videoConstraints = {
 function UserProfile() {
   const [userInfo, setUserInfo] = useState();
   const [toggleSwitch, setToggleSwitch] = useState(false);
+  const [showPictureBlock, setShowPictureBlock] = useState(false);
   useEffect(() => {
     if (!userInfo) {
       UserService.getUserProfile().then((result) => {
@@ -28,21 +29,27 @@ function UserProfile() {
     setToggleSwitch(!toggleSwitch);
   }
 
-  const [picture, setPicture] = useState("");
+  const [pictureFile, setPictureFile] = useState("");
+  const [pictureSrc, setpictureSrc] = useState("");
   const webcamRef = useRef(null);
   const capture = useCallback(async () => {
     const pictureSrc = webcamRef.current.getScreenshot();
     const blob = await fetch(pictureSrc).then((res) => res.blob());
-    setPicture(blob);
+    setPictureFile(blob);
+    setpictureSrc(pictureSrc);
   }, []);
 
   function uploadUserImage() {
-    if (picture) {
-      console.log("picture: ", picture);
-      UserService.postUserImage(picture).then((result) => {
-        console.log("status: ", result.status);
+    if (pictureFile) {
+      UserService.postUserImage(pictureFile).then((result) => {
+        setUserInfo(result?.data);
+        setToggleSwitch(result?.data?.using_visual_authentication);
       });
     }
+  }
+
+  function removeUserImage() {
+    console.log('removed');
   }
 
   return (
@@ -72,41 +79,57 @@ function UserProfile() {
                 </p>
               )}
             </div>
-            {userInfo && userInfo?.have_face_image && (
+            {userInfo && userInfo?.have_face_image ? (
+              <div className="excistedImageBtns">
+                <button
+                  onClick={() => setShowPictureBlock(true)}
+                  className="btn btn-primary"
+                >
+                  Retake image
+                </button>
+                <p>Or</p>
+                <button
+                  onClick={() => removeUserImage()}
+                  className="btn btn btn-danger"
+                >
+                  Remove image
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
+                onClick={() => setShowPictureBlock(true)}
                 className="btn btn-primary"
               >
-                Retake image
+                Take image
               </button>
             )}
           </section>
         </div>
 
-        {toggleSwitch && !userInfo?.using_visual_authentication && (
+        {showPictureBlock && (
           <div className="rightBlock">
-            {picture ? (
-              <img alt="userImg" src={picture} />
+            {pictureFile && pictureSrc ? (
+              <img alt="userImg" src={pictureSrc} />
             ) : (
-              <Webcam
-                audio={false}
-                height={400}
-                ref={webcamRef}
-                width={400}
-                screenshotFormat="image/jpeg"
-                videoConstraints={videoConstraints}
-                mirrored={true}
-              />
+              <>
+                <Webcam
+                  audio={false}
+                  height={400}
+                  ref={webcamRef}
+                  width={400}
+                  screenshotFormat="image/jpeg"
+                  videoConstraints={videoConstraints}
+                  mirrored={true}
+                />
+              </>
             )}
 
-            {picture ? (
+            {pictureFile && pictureSrc ? (
               <div className="btnBlock">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
-                    setPicture();
+                    setPictureFile();
                   }}
                   className="btn btn-danger"
                 >
