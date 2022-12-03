@@ -1,4 +1,5 @@
 import cv2
+from django.core.files.images import ImageFile
 from django.contrib.auth import get_user_model, login, logout, authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -77,14 +78,21 @@ class RegisterView(APIView):
 class ProfileView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    def convert_blob_file_to_image(self):
+        file = self.request.data.get('face_image')
+        image = ImageFile(file.file, name=f'{self.request.user.email}_face_image.{file.name}')
+        return image
+
     def get(self, request, *args, **kwargs):
         serializer = UserSerializer(request.user)
         return Response(serializer.data, 200)
 
     def patch(self, request, *args, **kwargs):
-        print(request.data)
-        print(type(request.data.get("face_image")))
+        if request.data.get('face_image'):
+            image = self.convert_blob_file_to_image()
+            request.data.update({'face_image': image})
+
         serializer = UserSerializer(request.user, data=request.data, partial=True)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, 200)

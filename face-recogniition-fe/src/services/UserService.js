@@ -6,7 +6,7 @@ const getUserProfile = () => {
 
 const postUserImage = (data) => {
   const newData = new FormData();
-  newData.append("face_image", data);
+  newData.append("face_image", data, 'jpeg');
   return axios.patch(`http://localhost:8000/auth/profile/`, newData);
 };
 
