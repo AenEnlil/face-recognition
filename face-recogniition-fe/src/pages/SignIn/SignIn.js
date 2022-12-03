@@ -61,7 +61,10 @@ function SignIn() {
       newData.append("face_image", pictureFile, "jpeg");
       newData.append("user_id", userId);
       AuthService.signInVisual(newData).then((result) => {
-        console.log("result: ", result?.data);
+        navigate(`/user-profile`);
+        Cookies.set("isLogged", true);
+        Cookies.set("access", result?.data?.tokens?.access);
+        Cookies.set("refresh", result?.data?.tokens?.refresh);
       });
     }
   }, [visualAuth, pictureFile, userId]);
