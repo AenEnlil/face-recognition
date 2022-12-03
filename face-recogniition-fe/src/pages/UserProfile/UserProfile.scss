@@ -49,6 +49,20 @@
                     }
                 }
             }
+
+            .excistedImageBtns {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+
+                p {
+                    font-size: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 0;
+                }
+            }
         }
     }
 
