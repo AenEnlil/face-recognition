@@ -32,7 +32,7 @@
   margin: 2em auto;
 }
 
-#form >  input, .btn{
+input, .signBtn{
   border: 1px solid #e9ecef;
   padding: .9em 1em;
 }
@@ -41,7 +41,7 @@
   outline: none;
 }
 
-#form > .btn{
+.signBtn{
   background-color: #003049;
   color: #e9ecef;
   font-size: 1em;
@@ -60,7 +60,13 @@
 .register .col-1{
   margin: auto;
   padding: 3em 0;
+  width: auto;
 }
+
+.register .col-2{
+  width: auto;
+}
+
 
 .register .col-2 img{
   width: 480px;

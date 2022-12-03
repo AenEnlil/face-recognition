@@ -10,6 +10,12 @@ const signIn = (data) => {
   });
 };
 
+const signInVisual = (data) => {
+  return axios.post(`http://localhost:8000/auth/visual-authentication/`, data, {
+    withCredentials: true,
+  });
+};
+
 const signOut = () => {
   return axios.get(`http://localhost:8000/auth/logout/`);
 };
@@ -17,7 +23,8 @@ const signOut = () => {
 const AuthService = {
   signUp,
   signIn,
-  signOut
+  signOut,
+  signInVisual,
 };
 
 export default AuthService;

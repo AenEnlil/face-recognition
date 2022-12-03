@@ -26,7 +26,6 @@ function UserProfile() {
   }, [userInfo]);
 
   function handleToggleChange() {
-    // setToggleSwitch(!toggleSwitch);
     UserService.postVisualAuth(!toggleSwitch).then((result) => {
       setUserInfo(result?.data);
       setToggleSwitch(result?.data?.using_visual_authentication);

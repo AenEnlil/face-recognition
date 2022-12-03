@@ -71,7 +71,7 @@ function SignUp() {
             {servError && (
               <p className="formError">{servError}</p>
             )}
-            <button className="btn">Sign Up</button>
+            <button className="signBtn">Sign Up</button>
           </form>
         </div>
         <div className="col-2">

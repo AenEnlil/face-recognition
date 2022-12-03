@@ -1,0 +1,9 @@
+.visualAuthBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .signBtn {
+        max-width: 60%;
+    }
+}
