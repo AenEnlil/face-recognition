@@ -21,7 +21,7 @@ class LoginView(APIView):
             if not user.using_visual_authentication:
                 return Response(user.create_tokens_for_user(), 200)
 
-            return Response({"id": user.id}, 200)
+            return Response({"result": "redirected to visual auth", "user_id": user.id}, 200)
         return Response({"error": 'invalid credentials'}, 400)
 
 
