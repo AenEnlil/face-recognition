@@ -14,8 +14,14 @@ class UserSerializer(ModelSerializer):
         model = User
 
     def check_if_have_face_image(self, instance):
-        return instance.face_image is not None
+        return instance.check_if_face_image_added()
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+    
+    def update(self, instance, validated_data):
+        if 'face_image' in validated_data:
+            instance.delete_image()
+            instance.face_image = validated_data.get('face_image')
+        return super(UserSerializer, self).update(instance, validated_data)

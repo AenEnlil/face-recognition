@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.core.files.storage import default_storage
 from django.db import models
+
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -38,7 +40,7 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    face_image = models.ImageField(upload_to='face_image')
+    face_image = models.ImageField(upload_to='face_image', blank=True, null=True)
 
     using_visual_authentication = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -51,3 +53,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def create_tokens_for_user(self):
         token = RefreshToken.for_user(self)
         return {'refresh': str(token), 'access': str(token.access_token)}
+
+    def check_if_face_image_added(self):
+        if self.face_image:
+            return True
+        return False
+
+    def delete_image(self):
+        if self.face_image:
+            default_storage.delete(self.face_image.path)
+        return 'image deleted'

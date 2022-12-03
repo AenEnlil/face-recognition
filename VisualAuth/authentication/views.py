@@ -88,6 +88,9 @@ class ProfileView(APIView):
         return Response(serializer.data, 200)
 
     def patch(self, request, *args, **kwargs):
+        if request.query_params.get('delete_image'):
+            self.request.user.delete_image()
+
         if request.data.get('face_image'):
             image = self.convert_blob_file_to_image()
             request.data.update({'face_image': image})
