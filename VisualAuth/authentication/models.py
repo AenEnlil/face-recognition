@@ -59,7 +59,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
         return False
 
-    def delete_image(self):
+    def delete_image(self, clear_field=False):
         if self.face_image:
             default_storage.delete(self.face_image.path)
+            if clear_field:
+                self.face_image = None
+                self.save()
         return 'image deleted'
