@@ -1,7 +1,6 @@
 import { React, useState, useEffect, useRef, useCallback } from "react";
 import Switch from "react-switch";
 import Webcam from "react-webcam";
-import Button from "react-bootstrap/Button";
 
 import UserService from "../../services/UserService";
 
@@ -31,10 +30,20 @@ function UserProfile() {
 
   const [picture, setPicture] = useState("");
   const webcamRef = useRef(null);
-  const capture = useCallback(() => {
+  const capture = useCallback(async () => {
     const pictureSrc = webcamRef.current.getScreenshot();
-    setPicture(pictureSrc);
+    const blob = await fetch(pictureSrc).then((res) => res.blob());
+    setPicture(blob);
   }, []);
+
+  function uploadUserImage() {
+    if (picture) {
+      console.log("picture: ", picture);
+      UserService.postUserImage(picture).then((result) => {
+        console.log("status: ", result.status);
+      });
+    }
+  }
 
   return (
     <>
@@ -63,59 +72,69 @@ function UserProfile() {
                 </p>
               )}
             </div>
+            {userInfo && userInfo?.have_face_image && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+                className="btn btn-primary"
+              >
+                Retake image
+              </button>
+            )}
           </section>
         </div>
 
-        <div className="rightBlock">
-          {picture ? (
-            <img alt="userImg" src={picture} />
-          ) : (
-            <Webcam
-              audio={false}
-              height={400}
-              ref={webcamRef}
-              width={400}
-              screenshotFormat="image/jpeg"
-              videoConstraints={videoConstraints}
-              mirrored={true}
-            />
-          )}
+        {toggleSwitch && !userInfo?.using_visual_authentication && (
+          <div className="rightBlock">
+            {picture ? (
+              <img alt="userImg" src={picture} />
+            ) : (
+              <Webcam
+                audio={false}
+                height={400}
+                ref={webcamRef}
+                width={400}
+                screenshotFormat="image/jpeg"
+                videoConstraints={videoConstraints}
+                mirrored={true}
+              />
+            )}
 
-          {picture ? (
-            <div className="btnBlock">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPicture();
-                }}
-                className="btn btn-danger"
-              >
-                Retake
-              </button>
+            {picture ? (
+              <div className="btnBlock">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPicture();
+                  }}
+                  className="btn btn-danger"
+                >
+                  Retake
+                </button>
 
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
-                className="btn btn-success"
-              >
-                Save image
-              </button>
-            </div>
-          ) : (
-            <div className="btnBlock">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  capture();
-                }}
-                className="btn btn-danger"
-              >
-                Capture
-              </button>
-            </div>
-          )}
-        </div>
+                <button
+                  onClick={() => uploadUserImage()}
+                  className="btn btn-success"
+                >
+                  Save image
+                </button>
+              </div>
+            ) : (
+              <div className="btnBlock">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    capture();
+                  }}
+                  className="btn btn-danger"
+                >
+                  Capture
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </article>
     </>
   );

@@ -82,6 +82,8 @@ class ProfileView(APIView):
         return Response(serializer.data, 200)
 
     def patch(self, request, *args, **kwargs):
+        print(request.data)
+        print(type(request.data.get("face_image")))
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         serializer.is_valid()
         serializer.save()

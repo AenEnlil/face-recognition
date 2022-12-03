@@ -20,7 +20,6 @@ function SignIn() {
   const onSubmit = (data) => {
     AuthService.signIn(data)
       .then((result) => {
-        console.log(result);
         if (result?.data) {
           Cookies.set("isLogged", true)
           Cookies.set("access", result?.data?.access);
