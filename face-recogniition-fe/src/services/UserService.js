@@ -10,9 +10,22 @@ const postUserImage = (data) => {
   return axios.patch(`http://localhost:8000/auth/profile/`, newData);
 };
 
+const deleteUserImage = () => {
+  return axios.patch(`http://localhost:8000/auth/profile/?delete_image=True`);
+};
+
+const postVisualAuth = (data) => {
+  return axios.patch(`http://localhost:8000/auth/profile/`, {
+    using_visual_authentication: data
+  });
+};
+
+
 const UserService = {
     getUserProfile,
-    postUserImage
+    postUserImage,
+    deleteUserImage,
+    postVisualAuth
 };
 
 export default UserService;

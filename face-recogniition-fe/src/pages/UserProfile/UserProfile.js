@@ -26,7 +26,11 @@ function UserProfile() {
   }, [userInfo]);
 
   function handleToggleChange() {
-    setToggleSwitch(!toggleSwitch);
+    // setToggleSwitch(!toggleSwitch);
+    UserService.postVisualAuth(!toggleSwitch).then((result) => {
+      setUserInfo(result?.data);
+      setToggleSwitch(result?.data?.using_visual_authentication);
+    })
   }
 
   const [pictureFile, setPictureFile] = useState("");
@@ -44,12 +48,17 @@ function UserProfile() {
       UserService.postUserImage(pictureFile).then((result) => {
         setUserInfo(result?.data);
         setToggleSwitch(result?.data?.using_visual_authentication);
+        setShowPictureBlock(false);
       });
     }
   }
 
   function removeUserImage() {
     console.log('removed');
+    UserService.deleteUserImage().then((result) => {
+      setUserInfo(result?.data);
+      setToggleSwitch(result?.data?.using_visual_authentication);
+    })
   }
 
   return (
@@ -67,7 +76,7 @@ function UserProfile() {
             <div className="toggleBlock">
               <Switch
                 onChange={handleToggleChange}
-                checked={toggleSwitch && toggleSwitch}
+                checked={toggleSwitch}
               />
               {userInfo && userInfo?.have_face_image ? (
                 <p className="infoMsg positiveWarningMsg">
