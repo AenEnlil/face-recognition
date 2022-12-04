@@ -16,6 +16,7 @@ function UserProfile() {
   const [userInfo, setUserInfo] = useState();
   const [toggleSwitch, setToggleSwitch] = useState(false);
   const [showPictureBlock, setShowPictureBlock] = useState(false);
+  const [pictureError, setPictureError] = useState(false);
   useEffect(() => {
     if (!userInfo) {
       UserService.getUserProfile().then((result) => {
@@ -29,7 +30,7 @@ function UserProfile() {
     UserService.postVisualAuth(!toggleSwitch).then((result) => {
       setUserInfo(result?.data);
       setToggleSwitch(result?.data?.using_visual_authentication);
-    })
+    });
   }
 
   const [pictureFile, setPictureFile] = useState("");
@@ -44,20 +45,27 @@ function UserProfile() {
 
   function uploadUserImage() {
     if (pictureFile) {
-      UserService.postUserImage(pictureFile).then((result) => {
-        setUserInfo(result?.data);
-        setToggleSwitch(result?.data?.using_visual_authentication);
-        setShowPictureBlock(false);
-      });
+      setPictureError(false);
+      UserService.postUserImage(pictureFile)
+        .then((result) => {
+          setUserInfo(result?.data);
+          setToggleSwitch(result?.data?.using_visual_authentication);
+          setShowPictureBlock(false);
+        })
+        .catch((error) => {
+          if (error.response.status === 400) {
+            setPictureError(true);
+          }
+        });
     }
   }
 
   function removeUserImage() {
-    console.log('removed');
+    console.log("removed");
     UserService.deleteUserImage().then((result) => {
       setUserInfo(result?.data);
       setToggleSwitch(result?.data?.using_visual_authentication);
-    })
+    });
   }
 
   return (
@@ -73,10 +81,7 @@ function UserProfile() {
           <section className="visualAuthBlock">
             <h2>Use visual verification:</h2>
             <div className="toggleBlock">
-              <Switch
-                onChange={handleToggleChange}
-                checked={toggleSwitch}
-              />
+              <Switch onChange={handleToggleChange} checked={toggleSwitch} />
               {userInfo && userInfo?.have_face_image ? (
                 <p className="infoMsg positiveWarningMsg">
                   You already have an uploaded image
@@ -133,23 +138,30 @@ function UserProfile() {
             )}
 
             {pictureFile && pictureSrc ? (
-              <div className="btnBlock">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPictureFile();
-                  }}
-                  className="btn btn-danger"
-                >
-                  Retake
-                </button>
+              <div className="bottomBlock">
+                <div className="btnBlock">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPictureFile();
+                    }}
+                    className="btn btn-danger"
+                  >
+                    Retake
+                  </button>
 
-                <button
-                  onClick={() => uploadUserImage()}
-                  className="btn btn-success"
-                >
-                  Save image
-                </button>
+                  <button
+                    onClick={() => uploadUserImage()}
+                    className="btn btn-success"
+                  >
+                    Save image
+                  </button>
+                </div>
+                {pictureError && (
+                  <p className="pictureError">
+                    Can't locate face on photo. Please try again!
+                  </p>
+                )}
               </div>
             ) : (
               <div className="btnBlock">

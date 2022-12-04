@@ -15,11 +15,11 @@ function Header() {
 
   useEffect(() => {
     if (isLogged === "true") {
-      setLogged(true)
+      setLogged(true);
     } else {
-      setLogged(false)
+      setLogged(false);
     }
-  }, [isLogged, location])
+  }, [isLogged, location]);
 
   function logOut() {
     AuthService.signOut();
@@ -31,11 +31,18 @@ function Header() {
   function renderTopBtns() {
     if (logged && logged === true) {
       return (
-        <li>
-          <button className="navItemBtn" onClick={() => logOut()}>
-            LogOut
-          </button>
-        </li>
+        <>
+          <li>
+            <NavLink className="navItem" to="/user-profile">
+              Profile
+            </NavLink>
+          </li>
+          <li>
+            <button className="navItemBtn" onClick={() => logOut()}>
+              LogOut
+            </button>
+          </li>
+        </>
       );
     } else {
       return (
@@ -64,9 +71,7 @@ function Header() {
         <h1>Face Recognizer</h1>
       </div>
       <nav className="navigationMenu">
-        <ul className="nav">
-          {renderTopBtns()}
-        </ul>
+        <ul className="nav">{renderTopBtns()}</ul>
       </nav>
     </header>
   );

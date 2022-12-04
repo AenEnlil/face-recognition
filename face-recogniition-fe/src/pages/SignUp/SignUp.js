@@ -55,7 +55,7 @@ function SignUp() {
               <p className="formError">{errors.email.message}</p>
             )}
             <input
-              type="text"
+              type="password"
               {...register("password", {
                 required: "Password is required",
                 minLength: {

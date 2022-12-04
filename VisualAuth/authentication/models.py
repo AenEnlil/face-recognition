@@ -64,5 +64,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             default_storage.delete(self.face_image.path)
             if clear_field:
                 self.face_image = None
+                self.using_visual_authentication = False
                 self.save()
         return 'image deleted'

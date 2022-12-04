@@ -53,6 +53,19 @@ input, .signBtn{
   gap: 1em;
 }
 
+.forgotPass {
+  padding-top: 30px;
+
+  .linkTxt {
+    color: blue;
+    cursor: pointer;
+  }
+}
+
+.pictureError {
+  color: red;
+}
+
 .flex-col{
   flex-direction: column;
 }

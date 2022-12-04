@@ -22,6 +22,7 @@ function SignIn() {
 
   const [visualAuth, setVisualAuth] = useState(false);
   const [userId, setUserId] = useState();
+  const [pictureLoginError, setPictureLoginError] = useState(false);
   const {
     register,
     handleSubmit,
@@ -50,6 +51,7 @@ function SignIn() {
   const [pictureFile, setPictureFile] = useState("");
   const webcamRef = useRef(null);
   const capture = useCallback(async () => {
+    setPictureLoginError(false);
     const pictureSrc = webcamRef.current.getScreenshot();
     const blob = await fetch(pictureSrc).then((res) => res.blob());
     setPictureFile(blob);
@@ -60,14 +62,20 @@ function SignIn() {
       const newData = new FormData();
       newData.append("face_image", pictureFile, "jpeg");
       newData.append("user_id", userId);
-      AuthService.signInVisual(newData).then((result) => {
-        navigate(`/user-profile`);
-        Cookies.set("isLogged", true);
-        Cookies.set("access", result?.data?.tokens?.access);
-        Cookies.set("refresh", result?.data?.tokens?.refresh);
-      });
+      AuthService.signInVisual(newData)
+        .then((result) => {
+          navigate(`/user-profile`);
+          Cookies.set("isLogged", true);
+          Cookies.set("access", result?.data?.tokens?.access);
+          Cookies.set("refresh", result?.data?.tokens?.refresh);
+        })
+        .catch((error) => {
+          if (error.response.status === 400) {
+            setPictureLoginError(true);
+          }
+        });
     }
-  }, [visualAuth, pictureFile, userId]);
+  }, [visualAuth, pictureFile, userId, navigate]);
 
   return (
     <section className="registerBox">
@@ -98,7 +106,7 @@ function SignIn() {
                   <p className="formError">{errors.email.message}</p>
                 )}
                 <input
-                  type="text"
+                  type="password"
                   {...register("password", {
                     required: "Password is required",
                     minLength: {
@@ -113,6 +121,11 @@ function SignIn() {
                 )}
                 {servError && <p className="formError">{servError}</p>}
                 <button className="signBtn">Sign In</button>
+
+                <p className="forgotPass">
+                  Forgot your password?{" "}
+                  <span className="linkTxt">Click here!</span>
+                </p>
               </form>
             </>
           ) : (
@@ -128,6 +141,17 @@ function SignIn() {
               >
                 Scan face
               </button>
+
+              {pictureLoginError && (
+                <p className="pictureError">
+                  Can't locate face on photo. Please try again!
+                </p>
+              )}
+
+              <p className="forgotPass">
+                Forgot your password?{" "}
+                <span className="linkTxt">Click here!</span>
+              </p>
             </div>
           )}
         </div>
