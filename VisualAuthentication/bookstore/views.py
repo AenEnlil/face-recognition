@@ -22,7 +22,6 @@ class BookViewSet(ViewSet):
         return Response(serializer.data, 200)
 
     def retrieve(self, request, *args, **kwargs):
-        print(self.kwargs)
         book = self.queryset.filter(id=self.kwargs.get('book_id')).first()
         serializer = BookSerializer(book)
         return Response(serializer.data)
