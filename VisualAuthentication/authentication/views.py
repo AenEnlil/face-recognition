@@ -1,32 +1,23 @@
 import cv2
-from django.core.files.images import ImageFile
 from django.core.files.storage import default_storage
-from django.contrib.auth import get_user_model, login, logout, authenticate
+from django.contrib.auth import logout, authenticate
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import APIException
 
-from face_recognition import load_image_file, face_encodings, compare_faces, face_locations
+from face_recognition import face_encodings, compare_faces, face_locations
 
 from .serializers import UserSerializer
 from .models import User
+from .utils import convert_file_to_image
 
 
-def convert_blob_file_to_image(request, for_visual_auth=False):
-    file = request.data.get('face_image')
-    user_email = request.user.email if request.user.is_authenticated else 'None'
-    image = ImageFile(file.file, name=f'{user_email}_face_image.{file.name}')
-    if for_visual_auth:
-        default_storage.save(image.name, image)
-        return default_storage.path(image.name)
-    return image
-
-
-class LoginView(APIView):
+class AuthenticationViewSet(ViewSet):
     permission_classes = (AllowAny,)
 
-    def post(self, request, *args, **kwargs):
+    def login(self, request, *args, **kwargs):
         data = request.data
         user = authenticate(request, username=data['email'], password=data['password'])
 
@@ -36,6 +27,20 @@ class LoginView(APIView):
 
             return Response({"redirect": True, "user_id": user.id}, 200)
         return Response({"error": 'invalid credentials'}, 400)
+
+# class LoginView(APIView):
+#     permission_classes = (AllowAny,)
+#
+#     def post(self, request, *args, **kwargs):
+#         data = request.data
+#         user = authenticate(request, username=data['email'], password=data['password'])
+#
+#         if user is not None:
+#             if not user.using_visual_authentication:
+#                 return Response({"redirect": False, "tokens": user.create_tokens_for_user()}, 200)
+#
+#             return Response({"redirect": True, "user_id": user.id}, 200)
+#         return Response({"error": 'invalid credentials'}, 400)
 
 
 class VisualAuthentication(APIView):
@@ -73,7 +78,7 @@ class VisualAuthentication(APIView):
 
         user = User.objects.get(id=user_id)
 
-        uploaded_image_path = convert_blob_file_to_image(request, for_visual_auth=True)
+        uploaded_image_path = convert_file_to_image(request, for_visual_auth=True)
         face_image = cv2.imread(uploaded_image_path)
         face_image_from_database = cv2.imread(user.face_image.path)
 
@@ -112,11 +117,6 @@ class RegisterView(APIView):
 class ProfileView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def convert_blob_file_to_image(self):
-        file = self.request.data.get('face_image')
-        image = ImageFile(file.file, name=f'{self.request.user.email}_face_image.{file.name}')
-        return image
-
     def get(self, request, *args, **kwargs):
         serializer = UserSerializer(request.user)
         return Response(serializer.data, 200)
@@ -126,7 +126,7 @@ class ProfileView(APIView):
             self.request.user.delete_image(clear_field=True)
 
         if request.data.get('face_image'):
-            image = convert_blob_file_to_image(request)
+            image = convert_file_to_image(request)
             request.data.update({'face_image': image})
 
         serializer = UserSerializer(request.user, data=request.data, partial=True)
