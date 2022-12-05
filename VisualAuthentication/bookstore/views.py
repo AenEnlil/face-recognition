@@ -7,7 +7,7 @@ from .models import Book
 
 
 class BookViewSet(ViewSet):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
     queryset = Book.objects.all()
 
     @staticmethod
