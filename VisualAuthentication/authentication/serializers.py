@@ -11,7 +11,7 @@ from .models import User
 
 class UserSerializer(ModelSerializer):
     password = fields.CharField(write_only=True)
-    face_image = fields.ImageField(write_only=True)
+    face_image = fields.ImageField(write_only=True, required=False)
     have_face_image = fields.SerializerMethodField('check_if_have_face_image')
 
     class Meta:
