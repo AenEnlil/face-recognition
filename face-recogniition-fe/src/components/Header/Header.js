@@ -68,7 +68,7 @@ function Header() {
         <NavLink to="/">
           <img src={Logo} alt="Logo" />
         </NavLink>
-        <h1>Face Recognizer</h1>
+        <h1>Bookstore</h1>
       </div>
       <nav className="navigationMenu">
         <ul className="nav">{renderTopBtns()}</ul>

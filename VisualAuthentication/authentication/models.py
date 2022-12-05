@@ -50,6 +50,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
+    def __str__(self):
+        return self.email
+
     def create_tokens_for_user(self):
         token = RefreshToken.for_user(self)
         return {'refresh': str(token), 'access': str(token.access_token)}
