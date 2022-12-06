@@ -1,0 +1,90 @@
+.books {
+    display: flex;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    width: 100%;
+
+    ul {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        
+        li {
+            width: calc(100% / 4);
+            max-width: 250px;
+
+            .bookItem {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+                border: 2px solid gray;
+                border-radius: 12px;
+                padding: 10px;
+
+                .bookCover {
+                    border-radius: 10px;
+                    height: 250px;
+                    object-fit: cover;
+                }
+                
+                p {
+                    margin: 0;
+                }
+
+                .bookTitle {
+                    font-size: 24px;
+                }
+            }
+        }
+    }
+}
+
+.book {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    width: 100%;
+    gap: 30px;
+
+    .topBlock {
+        display: flex;
+        gap: 30px;
+
+        .bookCover {
+            width: 400px;
+            height: 550px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    }
+
+    .infoBlock {
+
+        .bookTitle {
+            font-size: 24px;
+            font-weight: 600;
+        }
+    }
+
+    .botBlock {
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            list-style-type: circle;
+
+            li {
+
+                p {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}

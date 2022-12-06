@@ -33,7 +33,7 @@ function SignIn() {
       .then((result) => {
         if (result?.data) {
           if (result?.data?.redirect === false) {
-            navigate(`/user-profile`);
+            navigate(`/bookstore`);
             Cookies.set("isLogged", true);
             Cookies.set("access", result?.data?.tokens?.access);
             Cookies.set("refresh", result?.data?.tokens?.refresh);
@@ -64,7 +64,7 @@ function SignIn() {
       newData.append("user_id", userId);
       AuthService.signInVisual(newData)
         .then((result) => {
-          navigate(`/user-profile`);
+          navigate(`/bookstore`);
           Cookies.set("isLogged", true);
           Cookies.set("access", result?.data?.tokens?.access);
           Cookies.set("refresh", result?.data?.tokens?.refresh);

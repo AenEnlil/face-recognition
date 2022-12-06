@@ -2,7 +2,7 @@ import { React } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { Header, Footer } from "./components";
-import { Landing, SignUp, SignIn, UserProfile } from "./pages";
+import { Landing, SignUp, SignIn, UserProfile, Bookstore, SingleBook } from "./pages";
 
 import Interceptor from "./services/Interceptor"
 
@@ -21,6 +21,8 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
 
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/bookstore" element={<Bookstore />} />
+          <Route path="/bookstore/book/:bookId" element={<SingleBook />} />
         </Routes>
       </main>
       <Footer />

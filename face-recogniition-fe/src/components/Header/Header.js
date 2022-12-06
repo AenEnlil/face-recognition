@@ -32,6 +32,11 @@ function Header() {
     if (logged && logged === true) {
       return (
         <>
+        <li>
+            <NavLink className="navItem" to="/bookstore">
+              Books
+            </NavLink>
+          </li>
           <li>
             <NavLink className="navItem" to="/user-profile">
               Profile
